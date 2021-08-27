@@ -8,11 +8,15 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func NewParser() Parser {
-	return &AppleCharityParser{}
+func NewParser(logger log.Logger) Parser {
+	return &AppleCharityParser{
+		logger,
+	}
 }
 
-type AppleCharityParser struct{}
+type AppleCharityParser struct {
+	logger log.Logger
+}
 
 func (p *AppleCharityParser) Parse(url string) ([]*Case, error) {
 	html, err := FetchHTML(url)
@@ -78,15 +82,15 @@ func (p *AppleCharityParser) ParseCaseLinks(html string) (links []string, err er
 }
 
 func (p *AppleCharityParser) parseCaseWorker(caseLinks <-chan string, cases chan<- *Case) {
-	log.Info("start worker")
-	defer log.Info("worker closed")
+	p.logger.Info("start worker")
+	defer p.logger.Info("worker closed")
 
 	for link := range caseLinks {
 		html, err := FetchHTMLByCurl(link)
 		if err != nil {
 			continue
 		}
-		log.Info("parse case, link: ", link)
+		p.logger.Info("parse case, link: ", link)
 
 		c := p.ParseCase(html)
 		cases <- c
@@ -97,7 +101,7 @@ func (p *AppleCharityParser) ParseCase(html string) *Case {
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
 
 	if err != nil {
-		log.Error("parse case: ", err)
+		p.logger.Error("parse case: ", err)
 		return nil
 	}
 

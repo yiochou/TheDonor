@@ -22,7 +22,7 @@ func init() {
 }
 
 func TweetCases(cases []*Case) {
-	sort.Slice(cases[:], func(i, j int) bool {
+	sort.Slice(cases, func(i, j int) bool {
 		return cases[i].PublishedAt.Before(cases[j].PublishedAt)
 	})
 	for _, c := range cases {

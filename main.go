@@ -8,7 +8,7 @@ import (
 func main() {
 	appleCharityUrl := viper.GetString("APPLE_CHARITY_URL")
 
-	parser := NewParser()
+	parser := NewParser(*log.New())
 	cases, err := parser.Parse(appleCharityUrl)
 
 	if err != nil {
