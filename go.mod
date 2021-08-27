@@ -1,4 +1,4 @@
-module TheDonor
+module github.com/yiochou/TheDonor
 
 go 1.16
 
