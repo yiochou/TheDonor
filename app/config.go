@@ -30,21 +30,21 @@ func bindEnv() {
 }
 
 func LoadConfig(path string) (Config, error) {
-	config := &Config{}
+	config := &Config{
+		AppleCharityUrl: "https://tw.feature.appledaily.com/charity/projlist",
+		Database:        "the_donor",
+	}
 
 	viper.AddConfigPath(path)
-	viper.SetConfigName("default")
+	viper.SetConfigName(".env")
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		return *config, err
-	}
-
-	for _, key := range viper.AllKeys() {
-		val := viper.Get(key)
-		viper.Set(key, val)
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			return *config, err
+		}
 	}
 
 	/**

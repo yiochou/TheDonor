@@ -7,7 +7,6 @@ COPY go.sum ./
 RUN go mod download
 
 COPY ./app ./
-COPY default.env ./
 
 RUN go build -o /main
 
