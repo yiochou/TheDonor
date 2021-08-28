@@ -8,31 +8,36 @@ import (
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
-var twitterClient *twitter.Client
-
-func init() {
-	config := oauth1.NewConfig(viper.GetString("TWITTER_CONSUMER_KEY"), viper.GetString("TWITTER_CONSUMER_SECRET"))
-	token := oauth1.NewToken(viper.GetString("TWITTER_TOKEN"), viper.GetString("TWITTER_TOKEN_SECRET"))
-	httpClient := config.Client(oauth1.NoContext, token)
-
-	twitterClient = twitter.NewClient(httpClient)
+type Twitter struct {
+	client *twitter.Client
 }
 
-func TweetCases(cases []*Case) {
+func NewTwitter(config Config) Twitter {
+	OAuthConfig := oauth1.NewConfig(config.TwitterConsumerKey, config.TwitterConsumerSecret)
+	OAuthToken := oauth1.NewToken(config.TwitterToken, config.TwitterTokenSecret)
+	httpClient := OAuthConfig.Client(oauth1.NoContext, OAuthToken)
+
+	t := Twitter{
+		client: twitter.NewClient(httpClient),
+	}
+
+	return t
+}
+
+func (twitter *Twitter) TweetCases(cases []*Case) {
 	sort.Slice(cases, func(i, j int) bool {
 		return cases[i].PublishedAt.Before(cases[j].PublishedAt)
 	})
 	for _, c := range cases {
-		tweet, err := caseToTweet(*c)
+		tweet, err := twitter.caseToTweet(*c)
 
 		if err != nil {
 			log.Error(err)
 			continue
 		}
-		_, _, err = twitterClient.Statuses.Update(tweet, nil)
+		_, _, err = twitter.client.Statuses.Update(tweet, nil)
 		if err != nil {
 			log.Error(err)
 		}
@@ -41,7 +46,7 @@ func TweetCases(cases []*Case) {
 	}
 }
 
-func caseToTweet(c Case) (string, error) {
+func (twitter *Twitter) caseToTweet(c Case) (string, error) {
 	tweetTemplate := `
 {{ .Title}}
 

@@ -5,23 +5,37 @@ import (
 	"github.com/spf13/viper"
 )
 
-func init() {
-	viper.SetConfigName(".env")
-	viper.SetConfigType("dotenv")
-	viper.AddConfigPath(".")
-	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal(err)
-	}
-
-	for k, v := range getDefaultConfig() {
-		viper.SetDefault(k, v)
-	}
+type Config struct {
+	AppleCharityUrl       string `mapstructure:"APPLE_CHARITY_URL"`
+	MongodbUri            string `mapstructure:"MONGODB_URI"`
+	MongodbUsername       string `mapstructure:"MONGODB_USERNAME"`
+	MongodbPassword       string `mapstructure:"MONGODB_PASSWORD"`
+	Database              string `mapstructure:"DATABASE"`
+	TwitterConsumerKey    string `mapstructure:"TWITTER_CONSUMER_KEY"`
+	TwitterConsumerSecret string `mapstructure:"TWITTER_CONSUMER"`
+	TwitterToken          string `mapstructure:"TWITTER_TOKEN"`
+	TwitterTokenSecret    string `mapstructure:"TWITTER_TOKEN_SECRET"`
 }
 
-func getDefaultConfig() map[string]string {
-	return map[string]string{
-		"APPLE_CHARITY_URL": "https://tw.feature.appledaily.com/charity/projlist",
+func LoadConfig(path string) (Config, error) {
+	config := &Config{
+		AppleCharityUrl: "https://tw.feature.appledaily.com/charity/projlist",
 	}
+
+	viper.AddConfigPath(path)
+	viper.SetConfigName(".env")
+	viper.SetConfigType("env")
+
+	viper.AutomaticEnv()
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		return *config, err
+	}
+
+	err = viper.Unmarshal(config)
+
+	log.Info("loaded config")
+
+	return *config, err
 }

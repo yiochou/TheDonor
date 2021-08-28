@@ -108,12 +108,10 @@ func (p *AppleCharityParser) ParseCase(html string) *Case {
 	c := &Case{}
 	doc.Find("meta").Each(func(i int, s *goquery.Selection) {
 		property, exists := s.Attr("property")
-
 		if !exists {
 			return
 		}
 		content, exists := s.Attr("content")
-
 		if !exists {
 			return
 		}
