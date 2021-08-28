@@ -31,6 +31,11 @@ func ConnectMongoDB(config Config) (*mongo.Database, error) {
 		return nil, err
 	}
 
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
 	log.Info("connected to MongoDB!")
 
 	db := client.Database(config.Database)
