@@ -15,9 +15,14 @@ func main() {
 		log.Fatal("cannot connect to MongoDB:", err)
 	}
 
-	NewStore(db, *log.New())
+	store := NewStore(db, *log.New())
 
-	// TweetNewDonorCases(store, config)
+	err = StartServer(config, func() error {
+		return TweetNewDonorCases(store, config)
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func TweetNewDonorCases(store Store, config Config) error {

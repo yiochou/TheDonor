@@ -6,6 +6,7 @@ import (
 )
 
 type Config struct {
+	Port                  string `mapstructure:"PORT"`
 	AppleCharityUrl       string `mapstructure:"APPLE_CHARITY_URL"`
 	MongodbUri            string `mapstructure:"MONGODB_URI"`
 	MongodbUsername       string `mapstructure:"MONGODB_USERNAME"`
@@ -18,6 +19,7 @@ type Config struct {
 }
 
 func bindEnv() {
+	viper.BindEnv("PORT")
 	viper.BindEnv("APPLE_CHARITY_URL")
 	viper.BindEnv("MONGODB_URI")
 	viper.BindEnv("MONGODB_USERNAME")
@@ -31,6 +33,7 @@ func bindEnv() {
 
 func LoadConfig(path string) (Config, error) {
 	config := &Config{
+		Port:            "8080",
 		AppleCharityUrl: "https://tw.feature.appledaily.com/charity/projlist",
 		Database:        "the_donor",
 	}
