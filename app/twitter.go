@@ -48,6 +48,8 @@ func (twitter *Twitter) TweetCases(cases []*Case) {
 
 func (twitter *Twitter) caseToTweet(c Case) (string, error) {
 	tweetTemplate := `
+【 愛心捐款 💛 善哉善哉 】
+
 {{ .Title}}
 
 {{ .Link}}

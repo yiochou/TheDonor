@@ -18,6 +18,7 @@ func main() {
 	store := NewStore(db, *log.New())
 
 	err = StartServer(config, func() error {
+		log.Info("handle request")
 		return TweetNewDonorCases(store, config)
 	})
 	if err != nil {
@@ -31,6 +32,7 @@ func TweetNewDonorCases(store Store, config Config) error {
 	if err != nil {
 		return err
 	}
+	log.Info("cases parsed")
 
 	newCases, err := store.InsertCasesIfNotExists(cases)
 	if err != nil {
@@ -40,9 +42,12 @@ func TweetNewDonorCases(store Store, config Config) error {
 		log.Info("no new cases")
 		return nil
 	}
+	log.Info("new cases inserted")
 
 	twitter := NewTwitter(config)
 	twitter.TweetCases(cases)
+
+	log.Info("cases tweeted")
 
 	return nil
 }
