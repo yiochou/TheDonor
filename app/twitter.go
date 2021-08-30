@@ -48,10 +48,11 @@ func (twitter *Twitter) TweetCases(cases []*Case) {
 
 func (twitter *Twitter) caseToTweet(c Case) (string, error) {
 	tweetTemplate := `
-【 愛心捐款 💛 善哉善哉 】
+【 自由捐款 💛 量力而為 】
 
 {{ .Title}}
 
+線上捐款 👉 https://reurl.cc/ZGD5lQ
 {{ .Link}}
 	`
 	tweet, err := template.New("tweet").Parse(tweetTemplate)
