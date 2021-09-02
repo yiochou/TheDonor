@@ -103,7 +103,7 @@ resource "google_cloud_run_service" "default" {
 resource "google_cloud_scheduler_job" "job" {
   name             = "tweet-cases"
   description      = "tweet parsed cases"
-  schedule         = "0 10 * * *"
+  schedule         = "0 2 * * *"
   attempt_deadline = "320s"
 
   retry_config {
