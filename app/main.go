@@ -45,7 +45,7 @@ func TweetNewDonorCases(store Store, config Config) error {
 	log.Info("new cases inserted")
 
 	twitter := NewTwitter(config)
-	twitter.TweetCases(cases)
+	twitter.TweetCases(newCases)
 
 	log.Info("cases tweeted")
 
